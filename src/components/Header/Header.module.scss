@@ -1,0 +1,30 @@
+.header {
+	height: 44px;
+	border-bottom: 1px solid var(--border-color1);
+
+	display: flex;
+	align-items: center;
+
+	.icon {
+		margin-left: 20px;
+	}
+
+	.menu {
+		display: flex;
+
+		&__point{
+			height: 44px;
+			margin-left: 28px;
+			padding: 0 3px;
+
+			display: flex;
+			align-items: center;
+
+			&_active{
+				color: var(--text-color2);
+				padding-top: 2px;
+				border-bottom: 2px solid var(--text-color2);
+			}
+		}
+	}
+}
