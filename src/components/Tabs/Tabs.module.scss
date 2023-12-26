@@ -1,0 +1,17 @@
+.tabs {
+	height: 44px;
+	background-color: var(--background-color2);
+	border-bottom: 1px solid var(--border-color1);
+
+	display: flex;
+	align-items: center;
+
+	.tab {
+		height: 44px;
+		padding: 0 15px;
+		border-right: 1px solid var(--border-color1);
+
+		display: flex;
+		align-items: center;	
+	}
+}
