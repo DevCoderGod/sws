@@ -1,7 +1,7 @@
 import React from 'react'
 import S from './Header.module.scss';
 import cn from "classnames"
-import {Icon} from '../../icons/Icon'
+import {Icon} from '../../icons'
 
 export function Header() {
 	return (
