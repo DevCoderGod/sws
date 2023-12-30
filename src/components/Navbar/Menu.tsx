@@ -19,6 +19,7 @@ export function Menu() {
 		<>
 			{list.map((item) => {
 				return <Button
+					key={item}
 					title = {item}
 					active = {item === active}
 				/>
