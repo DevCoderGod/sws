@@ -12,10 +12,10 @@ export const RowLevelSlice = createSlice({
 	name: 'RowLevel',
 	initialState,
 	reducers:{
-		iconOnHover(state){
+		onMouseEnterAction(state){
 			state.onMouseEnter = true
 		},
-		iconOutHover(state){
+		onMouseLeaveAction(state){
 			state.onMouseEnter = false
 		}
 	}

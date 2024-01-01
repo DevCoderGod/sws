@@ -1,26 +1,32 @@
 import React from 'react'
 import S from './DataRows.module.scss'
+import cn from "classnames"
 import { Icon } from '../../icons'
 import { useActions, useAppState } from '../../store'
 import { Api } from '../../api'
 
+interface IProps {
+	id:number
+	level:number
+}
 
-export function Level({id}:{id:number}) {
+export function Level(props:IProps) {
 
-	const {iconOnHover, iconOutHover} = useActions()
+	const {onMouseEnterAction, onMouseLeaveAction} = useActions()
 	const {onMouseEnter} = useAppState(state => state.RowLevel)
 	const [deleteRow] = Api.useDeleteRowMutation()
 
-	const onMouseEnterHandler = () => iconOnHover()
-	const onMouseLeaveHandler = () => iconOutHover()
+	const onMouseEnterHandler = () => onMouseEnterAction()
+	const onMouseLeaveHandler = () => onMouseLeaveAction()
 	const onClickNewRowHandler = async() => {}
-	const onClickTrashfillHandler = () => deleteRow(id)
+	const onClickTrashfillHandler = () => deleteRow(props.id)
 
 	return (
 		<div
-			className={S.level}
-			onMouseEnter = {onMouseEnterHandler}
-			onMouseLeave = {onMouseLeaveHandler}
+			className={cn(S.level)}
+			style={{paddingLeft:`${props.level*20}px`}}
+			onMouseEnter={onMouseEnterHandler}
+			onMouseLeave={onMouseLeaveHandler}
 		>
 			<div
 				className={S.rowIcon}
