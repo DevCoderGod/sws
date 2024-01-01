@@ -12,7 +12,7 @@ export function Row(props:{row:ITreeResponse}) {
 				row={row}
 			/>
 		)}
-		<div className={cn(S.cell)}><Level/></div>
+		<div className={cn(S.cell)}><Level id = {props.row.id}/></div>
 		<div className={cn(S.cell, S.name)}>{props.row.rowName}</div>
 		<div className={cn(S.cell, S.salary)}>{props.row.salary}</div>
 		<div className={cn(S.cell, S.equipment)}>{props.row.equipmentCosts}</div>
