@@ -3,17 +3,20 @@ import S from './DataRows.module.scss'
 import { Api } from '../../api'
 import { Row } from './Row'
 import { useActions, useAppState } from '../../store'
-import { getViewRows } from './DataRows.service'
+import { getRows } from './DataRows.service'
 
 const titles = ["Уровень","Наименование работ","Основная з/п","Оборудование","Накладные расходы","Сметная прибыль"]
 
 export function DataRows() {
 
 	const {data} = Api.useGetRowsQuery()
-	const {setRowsAction} = useActions()
+	const {setRowsAction, startEditingAction} = useActions()
 	
 	const {rows} = useAppState(state => state.Rows)
-	useEffect(() => {setRowsAction(getViewRows(data))},[data])
+	useEffect(() => {
+		setRowsAction(getRows(data))
+		data?.length === 0 && startEditingAction(0)
+	},[data])
 
 	return (
 		<div className={S.dataRows}>

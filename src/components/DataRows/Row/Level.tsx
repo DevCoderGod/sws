@@ -4,7 +4,7 @@ import cn from "classnames"
 import { Icon } from '../../../icons'
 import { useActions, useAppState } from '../../../store'
 import { Api } from '../../../api'
-import { createViewRow } from '../DataRows.service'
+import { createRow } from '../DataRows.service'
 
 interface IProps {
 	id:number
@@ -23,7 +23,7 @@ export function Level(props:IProps) {
 		if(rowEditable) return
 		addRowAction({
 			index: rows.findIndex(row => row.id === props.id)+1,
-			newViewRow: createViewRow(props.level+1, props.id)
+			newViewRow: createRow(props.level+1, props.id)
 		})
 		startEditingAction(0)
 	}

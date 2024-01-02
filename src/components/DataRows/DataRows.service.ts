@@ -1,11 +1,12 @@
 import { ITreeResponse, IRow } from "../../models/Row.model"
 
-export function getViewRows(data:ITreeResponse[] | undefined, level:number=0, parentId:number|null=null):IRow[]{
+export function getRows(data:ITreeResponse[] | undefined, level:number=0, parentId:number|null=null):IRow[]{
 	if(!data) return []
-	return data.map(row => [{level, parentId, ...row}, ...getViewRows(row.child, level+1, row.id)]).flat()
+	if(data?.length === 0) return level === 0 ? [createRow(0)]:[]
+	return data.map(row => [{level, parentId, ...row}, ...getRows(row.child, level+1, row.id)]).flat()
 }
 
-export function createViewRow(level:number, parentId:number):IRow{
+export function createRow(level:number, parentId:number|null=null):IRow{
 	return {
 		level,
 		parentId,
