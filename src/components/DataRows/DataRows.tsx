@@ -27,6 +27,7 @@ export function DataRows() {
 			{data?.map(row =>
 				<Row
 					key={row.id}
+					level={0}
 					row={row}
 				/>
 			)}
