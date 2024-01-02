@@ -19,28 +19,29 @@ export function Row(props:IProps) {
 	const [createRow] = Api.useCreateRowMutation()
 	let rowRef = useRef<IRow>(props.row)
 
-	const editing = (field:{fieldName:keyof IRow, value:any}) =>
-		rowRef.current = {...rowRef.current, [field.fieldName]: field.value}
-
-	const startEditing = () => startEditingAction(props.row.id)
-
-	const stopEditing = async() => {
-		props.row.id > 0
-		?	await updateRow({
-				id:props.row.id,
-				body:{
-					...rowRef.current
-				}
-			}).finally(() => stopEditingAction())
-		:	await createRow(rowRef.current)
-	}
-
-	const propsCell:Omit<ICellProps, 'fieldName'> = {
-		editable: rowEditable === props.row.id,
-		editing,
-		startEditing,
-		stopEditing	
-	}
+	const propsCell:Omit<ICellProps, 'fieldName'> =
+	rowEditable === props.row.id
+	?	{
+			editable: true,
+			editing: (field:{fieldName:keyof IRow, value:any}) => {
+				rowRef.current = {...rowRef.current, [field.fieldName]: field.value}
+			},
+			stopEditing: async() => {
+				props.row.id > 0
+				?	await updateRow({
+						id:props.row.id,
+						body:{
+							...rowRef.current
+						}
+					}).finally(() => stopEditingAction())
+				:	await createRow(rowRef.current)
+			}
+		}
+	:	{
+			editable: false,
+			startEditing: () => startEditingAction(props.row.id)
+		}
+	
 
 	return <>
 		<div className={cn(S.cell)}>

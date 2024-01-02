@@ -14,9 +14,7 @@ interface IProps {
 export function Level(props:IProps) {
 
 	const {rows, rowEditable, mouseOverLevel} = useAppState(state => state.Rows)
-
 	const {mouseEnterLevelAction, mouseLeaveLevelAction, addRowAction, startEditingAction} = useActions()
-
 	const [deleteRow] = Api.useDeleteRowMutation()
 
 	const onMouseEnterHandler = () => mouseEnterLevelAction()
@@ -28,7 +26,6 @@ export function Level(props:IProps) {
 			newViewRow: createViewRow(props.level+1, props.id)
 		})
 		startEditingAction(0)
-
 	}
 	const onClickTrashfillHandler = () => deleteRow(props.id)
 
