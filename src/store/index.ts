@@ -1,21 +1,15 @@
 import { configureStore, bindActionCreators } from "@reduxjs/toolkit"
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 import { Api } from "../api"
-import { RowEditableActions, RowEditableReducer } from "./RowEditableSlice"
-import { RowLevelActions, RowLevelReducer } from "./RowLevelSlice"
 import { RowsActions, RowsReducer } from "./RowsState"
 
 const actions = {
-	...RowLevelActions,
-	...RowEditableActions,
 	...RowsActions
 }
 
 export const store = configureStore({
 	reducer:{
 		[Api.reducerPath]: Api.reducer,
-		RowLevel: RowLevelReducer,
-		RowEditable: RowEditableReducer,
 		Rows: RowsReducer
 	},
 	middleware: (getDefaultMiddleware:any) => getDefaultMiddleware().concat(Api.middleware),

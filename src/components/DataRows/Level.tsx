@@ -13,16 +13,14 @@ interface IProps {
 
 export function Level(props:IProps) {
 
-	const {rows} = useAppState(state => state.Rows)
-	const {onMouseEnter} = useAppState(state => state.RowLevel)
-	const {rowEditable} = useAppState(state => state.RowEditable)
-	
-	const {onMouseEnterAction, onMouseLeaveAction, addRowAction, startEditingAction} = useActions()
+	const {rows, rowEditable, mouseOverLevel} = useAppState(state => state.Rows)
+
+	const {mouseEnterLevelAction, mouseLeaveLevelAction, addRowAction, startEditingAction} = useActions()
 
 	const [deleteRow] = Api.useDeleteRowMutation()
 
-	const onMouseEnterHandler = () => onMouseEnterAction()
-	const onMouseLeaveHandler = () => onMouseLeaveAction()
+	const onMouseEnterHandler = () => mouseEnterLevelAction()
+	const onMouseLeaveHandler = () => mouseLeaveLevelAction()
 	const onClickNewRowHandler = () => {
 		if(rowEditable) return
 		addRowAction({
@@ -47,7 +45,7 @@ export function Level(props:IProps) {
 			>
 				<Icon name='row'/>
 			</div>
-			{onMouseEnter && 
+			{mouseOverLevel && 
 				<div
 					className={S.rowTrashfillIcon}
 					onClick={onClickTrashfillHandler}

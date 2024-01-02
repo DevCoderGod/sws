@@ -3,10 +3,14 @@ import { IRow } from "../models/Row.model";
 
 interface IRowsState {
 	rows: IRow[]
+	rowEditable: number | null
+	mouseOverLevel: boolean
 }
 
 const initialState:IRowsState = {
-	rows: []
+	rows: [],
+	rowEditable: null,
+	mouseOverLevel: false
 }
 
 export const RowsState = createSlice({
@@ -19,6 +23,18 @@ export const RowsState = createSlice({
 		addRowAction(state, action:PayloadAction<{index:number, newViewRow:IRow}>){
 			state.rows.splice(action.payload.index,0,action.payload.newViewRow)
 		},
+		startEditingAction(state, action:PayloadAction<number>){
+			state.rowEditable = action.payload
+		},
+		stopEditingAction(state){
+			state.rowEditable = null
+		},
+		mouseEnterLevelAction(state){
+			state.mouseOverLevel = true
+		},
+		mouseLeaveLevelAction(state){
+			state.mouseOverLevel = false
+		}
 	}
 })
 

@@ -13,7 +13,7 @@ interface IProps{
 }
 
 export function Row(props:IProps) {
-	const {rowEditable} = useAppState(state => state.RowEditable)
+	const {rowEditable} = useAppState(state => state.Rows)
 	const {startEditingAction, stopEditingAction} = useActions()
 	const [updateRow] = Api.useUpdateRowMutation()
 	const [createRow] = Api.useCreateRowMutation()
