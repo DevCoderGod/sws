@@ -4,6 +4,7 @@ import cn from "classnames"
 import { Icon } from '../../icons'
 import { useActions, useAppState } from '../../store'
 import { Api } from '../../api'
+import { createViewRow } from './DataRows.service'
 
 interface IProps {
 	id:number
@@ -12,13 +13,25 @@ interface IProps {
 
 export function Level(props:IProps) {
 
-	const {onMouseEnterAction, onMouseLeaveAction} = useActions()
+	const {rows} = useAppState(state => state.Rows)
 	const {onMouseEnter} = useAppState(state => state.RowLevel)
+	const {rowEditable} = useAppState(state => state.RowEditable)
+	
+	const {onMouseEnterAction, onMouseLeaveAction, addRowAction, startEditingAction} = useActions()
+
 	const [deleteRow] = Api.useDeleteRowMutation()
 
 	const onMouseEnterHandler = () => onMouseEnterAction()
 	const onMouseLeaveHandler = () => onMouseLeaveAction()
-	const onClickNewRowHandler = async() => {}
+	const onClickNewRowHandler = () => {
+		if(rowEditable) return
+		addRowAction({
+			index: rows.findIndex(row => row.id === props.id)+1,
+			newViewRow: createViewRow(props.level+1, props.id)
+		})
+		startEditingAction(0)
+
+	}
 	const onClickTrashfillHandler = () => deleteRow(props.id)
 
 	return (

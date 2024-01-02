@@ -1,7 +1,7 @@
 import React, { useRef } from 'react'
 import S from './DataRows.module.scss'
 import cn from "classnames"
-import { IRow, ITreeResponse } from '../../models/Row'
+import { IRow } from '../../models/Row.model'
 import { Level } from './Level'
 import { Cell, ICellProps } from './Cell'
 import { useAppState } from '../../store'
@@ -9,14 +9,14 @@ import { useActions } from '../../store'
 import { Api } from '../../api'
 
 interface IProps{
-	level:number
-	row:ITreeResponse
+	row:IRow
 }
 
 export function Row(props:IProps) {
 	const {rowEditable} = useAppState(state => state.RowEditable)
 	const {startEditingAction, stopEditingAction} = useActions()
 	const [updateRow] = Api.useUpdateRowMutation()
+	const [createRow] = Api.useCreateRowMutation()
 	let rowRef = useRef<IRow>(props.row)
 
 	const editing = (field:{fieldName:keyof IRow, value:any}) =>
@@ -24,12 +24,16 @@ export function Row(props:IProps) {
 
 	const startEditing = () => startEditingAction(props.row.id)
 
-	const stopEditing = async() => await updateRow({
-		id:props.row.id,
-		body:{
-			...rowRef.current
-		}
-	}).finally(() => stopEditingAction())
+	const stopEditing = async() => {
+		props.row.id > 0
+		?	await updateRow({
+				id:props.row.id,
+				body:{
+					...rowRef.current
+				}
+			}).finally(() => stopEditingAction())
+		:	await createRow(rowRef.current)
+	}
 
 	const propsCell:Omit<ICellProps, 'fieldName'> = {
 		editable: rowEditable === props.row.id,
@@ -41,8 +45,8 @@ export function Row(props:IProps) {
 	return <>
 		<div className={cn(S.cell)}>
 			<Level
-				id = {props.row.id}
-				level = {props.level}
+				id={props.row.id}
+				level={props.row.level}
 			/>
 		</div>
 		<Cell fieldName={'rowName'} {...propsCell}>{props.row.rowName}</Cell>
@@ -50,13 +54,5 @@ export function Row(props:IProps) {
 		<Cell fieldName={'equipmentCosts'} {...propsCell}>{props.row.equipmentCosts}</Cell>
 		<Cell fieldName={'overheads'} {...propsCell}>{props.row.overheads}</Cell>
 		<Cell fieldName={'estimatedProfit'} {...propsCell}>{props.row.estimatedProfit}</Cell>
-
-		{props.row.child.length>0 && props.row.child.map(row =>
-			<Row
-				key = {row.id}
-				level = {props.level+1}
-				row = {row}
-			/>
-		)}
 	</>
 }

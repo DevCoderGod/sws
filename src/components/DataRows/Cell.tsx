@@ -1,12 +1,12 @@
 import React from 'react'
 import S from './DataRows.module.scss'
 import cn from "classnames"
-import { IRow } from '../../models/Row'
+import { IRowBase } from '../../models/Row.model'
 
 export interface ICellProps extends React.PropsWithChildren {
-	fieldName:keyof IRow,
+	fieldName:keyof IRowBase,
 	editable:boolean
-	editing:(field:{fieldName:keyof IRow, value:any}) => void
+	editing:(field:{fieldName:keyof IRowBase, value:any}) => void
 	startEditing:() => void
 	stopEditing:() => void
 }
