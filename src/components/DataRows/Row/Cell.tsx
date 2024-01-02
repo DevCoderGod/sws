@@ -1,7 +1,7 @@
 import React from 'react'
-import S from './DataRows.module.scss'
+import S from './Row.module.scss'
 import cn from "classnames"
-import { IRowBase } from '../../models/Row.model'
+import { IRowBase } from '../../../models/Row.model'
 
 export interface ICellProps extends React.PropsWithChildren {
 	fieldName:keyof IRowBase,

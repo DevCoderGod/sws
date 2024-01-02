@@ -1,10 +1,10 @@
 import React from 'react'
-import S from './DataRows.module.scss'
+import S from './Row.module.scss'
 import cn from "classnames"
-import { Icon } from '../../icons'
-import { useActions, useAppState } from '../../store'
-import { Api } from '../../api'
-import { createViewRow } from './DataRows.service'
+import { Icon } from '../../../icons'
+import { useActions, useAppState } from '../../../store'
+import { Api } from '../../../api'
+import { createViewRow } from '../DataRows.service'
 
 interface IProps {
 	id:number

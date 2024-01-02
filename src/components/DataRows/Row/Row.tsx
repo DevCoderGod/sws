@@ -1,12 +1,12 @@
 import React, { useRef } from 'react'
-import S from './DataRows.module.scss'
+import S from './Row.module.scss'
 import cn from "classnames"
-import { IRow } from '../../models/Row.model'
+import { IRow } from '../../../models/Row.model'
 import { Level } from './Level'
 import { Cell, ICellProps } from './Cell'
-import { useAppState } from '../../store'
-import { useActions } from '../../store'
-import { Api } from '../../api'
+import { useAppState } from '../../../store'
+import { useActions } from '../../../store'
+import { Api } from '../../../api'
 
 interface IProps{
 	row:IRow

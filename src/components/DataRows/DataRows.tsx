@@ -5,7 +5,7 @@ import { Row } from './Row'
 import { useActions, useAppState } from '../../store'
 import { getViewRows } from './DataRows.service'
 
-export const titles = ["Уровень","Наименование работ","Основная з/п","Оборудование","Накладные расходы","Сметная прибыль"]
+const titles = ["Уровень","Наименование работ","Основная з/п","Оборудование","Накладные расходы","Сметная прибыль"]
 
 export function DataRows() {
 
@@ -17,7 +17,7 @@ export function DataRows() {
 
 	return (
 		<div className={S.dataRows}>
-			{titles.map(title => <div key={title} className={S.cell}> {title} </div>)}
+			{titles.map(title => <div key={title} className={S.title}> {title} </div>)}
 			{rows.map(row => <Row key={row.id} row={row}/>)}
 		</div>
 	)
