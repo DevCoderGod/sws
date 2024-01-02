@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ICreateRowRequest, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row'
+import { ICreateRowRequest, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row.model'
 import { id } from './id'
 
 export const Api = createApi({
@@ -13,9 +13,6 @@ export const Api = createApi({
 		getRows: build.query<ITreeResponse[],void>({
 			query: () => 'list',
 			providesTags: res => ['rows'],
-			transformResponse: (res:ITreeResponse[] ) => {
-				return res;
-			},
 		}),
 
 		createRow: build.mutation<IRowResponse, ICreateRowRequest>({
