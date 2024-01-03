@@ -25,7 +25,7 @@ export function Level(props:IProps) {
 		if(rowEditable !== null) return
 		addRowAction({
 			index: getIndexForNewLine(rows,props.index),
-			newViewRow: createRow(props.level+1, props.id)
+			newRow: createRow(props.level+1, props.id)
 		})
 		startEditingAction(0)
 	}

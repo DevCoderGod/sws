@@ -20,8 +20,8 @@ export const RowsState = createSlice({
 		setRowsAction(state, action:PayloadAction<IRow[]>){
 			state.rows=action.payload
 		},
-		addRowAction(state, action:PayloadAction<{index:number, newViewRow:IRow}>){
-			state.rows.splice(action.payload.index,0,action.payload.newViewRow)
+		addRowAction(state, action:PayloadAction<{index:number, newRow:IRow}>){
+			state.rows.splice(action.payload.index,0,action.payload.newRow)
 		},
 		startEditingAction(state, action:PayloadAction<number>){
 			state.rowEditable = action.payload
