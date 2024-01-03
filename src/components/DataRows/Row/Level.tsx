@@ -4,11 +4,12 @@ import cn from "classnames"
 import { Icon } from '../../../icons'
 import { useActions, useAppState } from '../../../store'
 import { Api } from '../../../api'
-import { createRow } from '../DataRows.service'
+import { createRow, getIndexForNewLine } from '../DataRows.service'
 
 interface IProps {
 	id:number
 	level:number
+	index:number
 }
 
 export function Level(props:IProps) {
@@ -22,7 +23,7 @@ export function Level(props:IProps) {
 	const onClickNewRowHandler = () => {
 		if(rowEditable) return
 		addRowAction({
-			index: rows.findIndex(row => row.id === props.id)+1,
+			index: getIndexForNewLine(rows,props.index),
 			newViewRow: createRow(props.level+1, props.id)
 		})
 		startEditingAction(0)

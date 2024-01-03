@@ -21,7 +21,7 @@ export function DataRows() {
 	return (
 		<div className={S.dataRows}>
 			{titles.map(title => <div key={title} className={S.title}> {title} </div>)}
-			{rows.map(row => <Row key={row.id} row={row}/>)}
+			{rows.map((row, i) => <Row key={row.id} row={row} index={i}/>)}
 		</div>
 	)
 }

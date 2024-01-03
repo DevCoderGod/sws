@@ -10,6 +10,7 @@ import { Api } from '../../../api'
 
 interface IProps{
 	row:IRow
+	index:number
 }
 
 export function Row(props:IProps) {
@@ -48,6 +49,7 @@ export function Row(props:IProps) {
 			<Level
 				id={props.row.id}
 				level={props.row.level}
+				index={props.index}
 			/>
 		</div>
 		<Cell fieldName={'rowName'} {...propsCell}>{props.row.rowName}</Cell>
