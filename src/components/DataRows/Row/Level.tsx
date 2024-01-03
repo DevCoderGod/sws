@@ -35,33 +35,37 @@ export function Level(props:IProps) {
 
 	return (
 		<div
-			className={cn(S.level)}
+			className={S.level}
 			style={{paddingLeft:`${props.level*20}px`}}
-			onMouseEnter={onMouseEnterHandler}
-			onMouseLeave={onMouseLeaveHandler}
 		>
 			<div
-				className={S.rowIcon}
-				onClick={onClickNewRowHandler}
+				className={cn(S.container, mouseOverLevel && S.container_hover)}
+				onMouseEnter={onMouseEnterHandler}
+				onMouseLeave={onMouseLeaveHandler}
 			>
-				{props.pID && <div className={cn(S.line, S.left)}></div>}
-				{props.pID && <div 
-					className={cn(S.line, S.up)}
-					style={{
-						height:`${52 + multiplier*60}px`,
-						top:`${-40 - multiplier*60}px`
-					}}
-				></div>}
-				<Icon name='row'/>
-			</div>
-			{mouseOverLevel && 
 				<div
-					className={S.rowTrashfillIcon}
-					onClick={onClickTrashfillHandler}
+					className={S.rowIcon}
+					onClick={onClickNewRowHandler}
 				>
-					<Icon name='trashfill'/>
+					{props.pID && <div className={cn(S.line, S.left)}></div>}
+					{props.pID && <div 
+						className={cn(S.line, S.up)}
+						style={{
+							height:`${52 + multiplier*60}px`,
+							top:`${-40 - multiplier*60}px`
+						}}
+					></div>}
+					<Icon name='row'/>
 				</div>
-			}
+				{mouseOverLevel && 
+					<div
+						className={S.rowTrashfillIcon}
+						onClick={onClickTrashfillHandler}
+					>
+						<Icon name='trashfill'/>
+					</div>
+				}
+			</div>
 		</div>
 	)
 }

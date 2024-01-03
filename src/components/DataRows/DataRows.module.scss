@@ -1,6 +1,7 @@
 .dataRows {
 	flex-grow: 1;
 	padding: 0 10px;
+	background-color: var(--background-color1);
 
 	display: grid;
 	grid-template-columns: min-content auto 200px 200px 200px 200px;
