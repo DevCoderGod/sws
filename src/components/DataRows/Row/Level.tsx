@@ -22,7 +22,7 @@ export function Level(props:IProps) {
 	const onMouseEnterHandler = () => mouseEnterLevelAction()
 	const onMouseLeaveHandler = () => mouseLeaveLevelAction()
 	const onClickNewRowHandler = () => {
-		if(rowEditable) return
+		if(rowEditable !== null) return
 		addRowAction({
 			index: getIndexForNewLine(rows,props.index),
 			newViewRow: createRow(props.level+1, props.id)

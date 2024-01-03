@@ -35,7 +35,7 @@ export function Row(props:IProps) {
 							...rowRef.current
 						}
 					}).finally(() => stopEditingAction())
-				:	await createRow(rowRef.current)
+				:	await createRow(rowRef.current).finally(() => stopEditingAction())
 			}
 		}
 	:	{

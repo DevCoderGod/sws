@@ -2,6 +2,7 @@ import React from 'react'
 import S from './Row.module.scss'
 import cn from "classnames"
 import { IRowBase } from '../../../models/Row.model'
+import { useAppState } from '../../../store'
 
 export interface ICellProps extends React.PropsWithChildren {
 	fieldName:keyof IRowBase
@@ -13,8 +14,13 @@ export interface ICellProps extends React.PropsWithChildren {
 
 export function Cell(props:ICellProps) {
 
+	const {rowEditable} = useAppState(state => state.Rows)
+
 	if(!props.editable){
-		const onDoubleClickHandler = () => props.startEditing && props.startEditing()
+		const onDoubleClickHandler = () => {
+			if(rowEditable !== null) return
+			props.startEditing && props.startEditing()
+		}
 		
 		return(
 			<div
