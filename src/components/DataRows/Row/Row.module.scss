@@ -34,6 +34,26 @@
 
 .rowIcon {
 	height: 24px;
+	position: relative;
+
+	.line {
+		background-color: var(--level-line-color1);
+		position: absolute;
+	}
+
+	.left{
+		height: 1px;
+		width: 13px;
+
+		top: 11px;
+		left: -9px;
+	}
+
+	.up {
+		width: 1px;
+
+		left: -9px;
+	}
 }
 
 .rowTrashfillIcon {

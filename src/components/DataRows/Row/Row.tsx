@@ -49,6 +49,7 @@ export function Row(props:IProps) {
 			<Level
 				id={props.row.id}
 				level={props.row.level}
+				pID={props.row.parentId}
 				index={props.index}
 			/>
 		</div>

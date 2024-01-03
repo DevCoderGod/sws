@@ -9,6 +9,7 @@ import { createRow, getIndexForNewLine } from '../DataRows.service'
 interface IProps {
 	id:number
 	level:number
+	pID:number | null
 	index:number
 }
 
@@ -30,6 +31,8 @@ export function Level(props:IProps) {
 	}
 	const onClickTrashfillHandler = () => deleteRow(props.id)
 
+	const multiplier = props.index - rows.findIndex(row => row.id === props.pID) - 1
+
 	return (
 		<div
 			className={cn(S.level)}
@@ -41,6 +44,14 @@ export function Level(props:IProps) {
 				className={S.rowIcon}
 				onClick={onClickNewRowHandler}
 			>
+				{props.pID && <div className={cn(S.line, S.left)}></div>}
+				{props.pID && <div 
+					className={cn(S.line, S.up)}
+					style={{
+						height:`${52 + multiplier*60}px`,
+						top:`${-40 - multiplier*60}px`
+					}}
+				></div>}
 				<Icon name='row'/>
 			</div>
 			{mouseOverLevel && 
