@@ -3,33 +3,17 @@ import S from './Row.module.scss'
 import cn from "classnames"
 import { Icon } from '../../../icons'
 import { useActions, useAppState } from '../../../store'
-import { Api } from '../../../api'
-import { createRow, getIndexForNewLine } from '../DataRows.service'
+import { ILevelProps } from './Row.types'
 
-interface IProps {
-	id:number
-	level:number
-	pID:number | null
-	index:number
-}
-
-export function Level(props:IProps) {
+export function Level(props:ILevelProps) {
 
 	const {rows, rowEditable, mouseOverLevel} = useAppState(state => state.Rows)
-	const {mouseEnterLevelAction, mouseLeaveLevelAction, addRowAction, startEditingAction} = useActions()
-	const [deleteRow] = Api.useDeleteRowMutation()
+	const {mouseEnterLevelAction, mouseLeaveLevelAction} = useActions()
 
 	const onMouseEnterHandler = () => mouseEnterLevelAction()
 	const onMouseLeaveHandler = () => mouseLeaveLevelAction()
-	const onClickNewRowHandler = () => {
-		if(rowEditable !== null) return
-		addRowAction({
-			index: getIndexForNewLine(rows,props.index),
-			newRow: createRow(props.level+1, props.id)
-		})
-		startEditingAction(0)
-	}
-	const onClickTrashfillHandler = () => deleteRow(props.id)
+	const onClickNewRowHandler = () => rowEditable === null && props.createNewRow()
+	const onClickTrashfillHandler = () => props.deleteRow()
 
 	const multiplier = props.index - rows.findIndex(row => row.id === props.pID) - 1
 

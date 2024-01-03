@@ -1,12 +1,10 @@
 import React, { useRef } from 'react'
 import S from './Row.module.scss'
-import cn from "classnames"
 import { IRow } from '../../../models/Row.model'
 import { Level } from './Level'
-import { Cell, ICellProps } from './Cell'
-import { useAppState } from '../../../store'
-import { useActions } from '../../../store'
-import { Api } from '../../../api'
+import { Cell } from './Cell'
+import { GetCellProps, GetLevelProps } from './Row.service'
+import { ICellProps } from './Row.types'
 
 interface IProps{
 	row:IRow
@@ -14,44 +12,14 @@ interface IProps{
 }
 
 export function Row(props:IProps) {
-	const {rowEditable} = useAppState(state => state.Rows)
-	const {startEditingAction, stopEditingAction} = useActions()
-	const [updateRow] = Api.useUpdateRowMutation()
-	const [createRow] = Api.useCreateRowMutation()
 	let rowRef = useRef<IRow>(props.row)
-
-	const propsCell:Omit<ICellProps, 'fieldName'> =
-	rowEditable === props.row.id
-	?	{
-			editable: true,
-			editing: (field:{fieldName:keyof IRow, value:any}) => {
-				rowRef.current = {...rowRef.current, [field.fieldName]: field.value}
-			},
-			stopEditing: async() => {
-				props.row.id > 0
-				?	await updateRow({
-						id:props.row.id,
-						body:{
-							...rowRef.current
-						}
-					}).finally(() => stopEditingAction())
-				:	await createRow(rowRef.current).finally(() => stopEditingAction())
-			}
-		}
-	:	{
-			editable: false,
-			startEditing: () => startEditingAction(props.row.id)
-		}
 	
+	const propsCell:Omit<ICellProps, 'fieldName'> = GetCellProps(props.row.id, rowRef)
+	const propsLevel = GetLevelProps(props.row, props.index)
 
 	return <>
-		<div className={cn(S.cell)}>
-			<Level
-				id={props.row.id}
-				level={props.row.level}
-				pID={props.row.parentId}
-				index={props.index}
-			/>
+		<div className={S.cell}>
+			<Level {...propsLevel}/>
 		</div>
 		<Cell fieldName={'rowName'} {...propsCell}>{props.row.rowName}</Cell>
 		<Cell fieldName={'salary'} {...propsCell}>{props.row.salary}</Cell>
