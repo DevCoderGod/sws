@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ICreateRowRequest, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row.model'
+import { ICreateRowRequest, IRowBase, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row.model'
 import { id } from './id'
 
 export const Api = createApi({
@@ -7,12 +7,12 @@ export const Api = createApi({
 	baseQuery: fetchBaseQuery({
 		baseUrl: `http://185.244.172.108:8081/v1/outlay-rows/entity/${id}/row`
 	}),
-	tagTypes:['rows'],
+	// tagTypes:['rows'],
 	endpoints: (build) => ({
 
 		getRows: build.query<ITreeResponse[],void>({
 			query: () => 'list',
-			providesTags: res => ['rows'],
+			// providesTags: res => ['rows'],
 		}),
 
 		createRow: build.mutation<IRowResponse, ICreateRowRequest>({
@@ -21,7 +21,7 @@ export const Api = createApi({
 				method: 'POST',
 				body
 			}),
-			invalidatesTags:['rows']
+			// invalidatesTags:['rows']
 		}),
 
 		updateRow: build.mutation<IRowResponse, {id:number, body:IUpdateRowRequest}>({
@@ -30,7 +30,7 @@ export const Api = createApi({
 				method: 'POST',
 				body: opt.body
 			}),
-			invalidatesTags:['rows']
+			// invalidatesTags:['rows']
 		}),
 
 		deleteRow: build.mutation<IRowResponse, number>({
@@ -38,7 +38,11 @@ export const Api = createApi({
 				url:`/${rId}/delete`,
 				method: 'DELETE',
 			}),
-			invalidatesTags:['rows']
+			transformResponse: (r:IRowResponse)=>{
+				console.log('r === ',r)
+				return r
+			}
+			// invalidatesTags:['rows']
 		})
 	})
 })

@@ -22,6 +22,7 @@ export function Row(props:IProps) {
 			<Level {...propsLevel}/>
 		</div>
 		<Cell fieldName={'rowName'} {...propsCell}>{props.row.rowName}</Cell>
+		<Cell fieldName={'total'} {...propsCell}>{props.row.total}</Cell>
 		<Cell fieldName={'salary'} {...propsCell}>{props.row.salary}</Cell>
 		<Cell fieldName={'equipmentCosts'} {...propsCell}>{props.row.equipmentCosts}</Cell>
 		<Cell fieldName={'overheads'} {...propsCell}>{props.row.overheads}</Cell>

@@ -1,12 +1,12 @@
-import { IRow } from "../../../models/Row.model"
+import { IRow, IRowResponse } from "../../../models/Row.model"
 import { useActions, useAppState } from "../../../store"
 import { Api } from '../../../api'
 import { createRow } from "../DataRows.service"
 import { ICellProps, ILevelProps } from "./Row.types"
 
 export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
-	const {rowEditable} = useAppState(state => state.Rows)
-	const {startEditingAction, stopEditingAction} = useActions()
+	const {rows, rowEditable} = useAppState(state => state.Rows)
+	const {setRowsAction, startEditingAction, stopEditingAction} = useActions()
 	const [updateRow] = Api.useUpdateRowMutation()
 	const [createRow] = Api.useCreateRowMutation()
 
@@ -19,14 +19,9 @@ export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
 				ref.current = {...ref.current, [fieldName]: value}
 			},
 			stopEditing: async() => {
-				id > 0
-				?	await updateRow({
-						id:id,
-						body:{
-							...ref.current
-						}
-					}).finally(() => stopEditingAction())
-				:	await createRow(ref.current).finally(() => stopEditingAction())
+				if(id === 0){ setRowsAction(recalculatedRow(rows, await createRow(ref.current).unwrap(), ref.current)) }
+				if(id > 0){ setRowsAction(recalculatedRow(rows, await updateRow({id, body:{...ref.current}}).unwrap(), ref.current)) }
+				stopEditingAction()
 			}
 		}
 	:	{
@@ -36,6 +31,40 @@ export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
 		}
 	
 	return propsCell
+}
+
+function recalculatedRow(rows: IRow[], response:IRowResponse, currentRow:IRow): IRow[] {
+	const newRows = [...rows]
+
+	const newRow:({index:number, row:IRow}) = {
+		index: newRows.findIndex(row => row.id ===currentRow.id),
+		row: {parentId:currentRow.parentId, level: currentRow.level,...response.current, total: currentRow.total}
+	}
+	newRows.splice(newRow.index,1,newRow.row)
+
+	if(currentRow.parentId){
+		const parentIndex = newRows.findIndex(row => row.id ===currentRow.parentId)
+		const parentRow:({index:number, row:IRow}) = {
+			index: parentIndex,
+			row: {...newRows[parentIndex], total:newRows[parentIndex].total+1}
+		}
+		newRows.splice(parentRow.index,1,parentRow.row)
+	}
+
+
+
+	response.changed.forEach(changedRow=>{
+		const oldRow = newRows.find(row => row.id ===changedRow.id)
+		if(oldRow){
+			const total = oldRow.total
+			const parentId = oldRow.parentId
+			const level = oldRow.level
+			const index = newRows.findIndex(row => row.id === oldRow.id)
+			const newRow :IRow = {...changedRow, parentId, level, total}
+			newRows.splice(index,1,newRow)
+		}
+	})
+	return newRows
 }
 
 export function getIndexForNewLine(rows: IRow[], index:number):number{
@@ -51,6 +80,10 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 	const [deleteRow] = Api.useDeleteRowMutation()
 	const {addRowAction, startEditingAction} = useActions()
 
+	
+	const i = getIndexForNewLine(rows, index)
+	if(rows[index].rowName === "q2")console.log('q2 next i === ',i)
+
 	return({
 		index,
 		id:row.id,
@@ -58,7 +91,7 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 		pID:row.parentId,
 		createNewRow:()=>{
 			addRowAction({
-				index: getIndexForNewLine(rows, index),
+				index: i,
 				newRow: createRow(row.level+1, row.id)
 			})
 			startEditingAction(0)
