@@ -33,27 +33,27 @@ export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>)
 		}
 }
 
-export function GetLevelProps(row:IRow, index:number):ILevelProps{
+export function GetLevelProps(currentRow:IRow, index:number):ILevelProps{
 	const {rows} = useAppState(state => state.Rows)
 	const {setRowsAction, addRowAction, startEditingAction} = useActions()
 	const [deleteRow] = Api.useDeleteRowMutation()
 
 	return({
 		index,
-		currentRow:row,
+		currentRow,
 		createNewRow:()=>{
 			addRowAction({
 				index: getIndexForNewLine(rows, index),
-				newRow: createEmptyRow(row.level+1, row.id)
+				newRow: createEmptyRow(currentRow.level+1, currentRow.id)
 			})
 			startEditingAction(0)
 		},
 		deleteRow: async() => {
-			const response = await deleteRow(row.id).unwrap()
+			const response = await deleteRow(currentRow.id).unwrap()
 			const newRows = [...rows]
 
-			if(row.parentId){
-				const parentIndex = newRows.findIndex(orow => orow.id ===row.parentId)
+			if(currentRow.parentId){
+				const parentIndex = newRows.findIndex(orow => orow.id ===currentRow.parentId)
 				const parentRow:({index:number, row:IRow}) = {
 					index: parentIndex,
 					row: {...newRows[parentIndex], total:newRows[parentIndex].total-1}
