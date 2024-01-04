@@ -20,9 +20,6 @@ export const RowsState = createSlice({
 		setRowsAction(state, action:PayloadAction<IRow[]>){
 			state.rows=action.payload
 		},
-		updateRowsAction(state, action:PayloadAction<IRowResponse>){
-
-		},
 		addRowAction(state, action:PayloadAction<{index:number, newRow:IRow}>){
 			state.rows.splice(action.payload.index,0,action.payload.newRow)
 		},

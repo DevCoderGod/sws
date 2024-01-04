@@ -1,7 +1,7 @@
 import { IRow, IRowResponse } from "../../../models/Row.model"
 import { useActions, useAppState } from "../../../store"
 import { Api } from '../../../api'
-import { createRow } from "../DataRows.service"
+import { createRow, getRows } from "../DataRows.service"
 import { ICellProps, ILevelProps } from "./Row.types"
 
 export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
@@ -77,12 +77,11 @@ export function getIndexForNewLine(rows: IRow[], index:number):number{
 
 export function GetLevelProps(row:IRow, index:number):ILevelProps{
 	const {rows} = useAppState(state => state.Rows)
+	const {setRowsAction} = useActions()
 	const [deleteRow] = Api.useDeleteRowMutation()
 	const {addRowAction, startEditingAction} = useActions()
 
-	
 	const i = getIndexForNewLine(rows, index)
-	if(rows[index].rowName === "q2")console.log('q2 next i === ',i)
 
 	return({
 		index,
@@ -96,6 +95,33 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 			})
 			startEditingAction(0)
 		},
-		deleteRow:() => deleteRow(row.id)
+		deleteRow: async() => {
+			const response = await deleteRow(row.id).unwrap()
+			const newRows = [...rows]
+
+			if(row.parentId){
+				const parentIndex = newRows.findIndex(orow => orow.id ===row.parentId)
+				const parentRow:({index:number, row:IRow}) = {
+					index: parentIndex,
+					row: {...newRows[parentIndex], total:newRows[parentIndex].total-1}
+				}
+				newRows.splice(parentRow.index,1,parentRow.row)
+		
+			}
+			response.changed.forEach(changedRow=>{
+				const oldRow = newRows.find(row => row.id ===changedRow.id)
+				if(oldRow){
+					const total = oldRow.total
+					const parentId = oldRow.parentId
+					const level = oldRow.level
+					const index = newRows.findIndex(row => row.id === oldRow.id)
+					const newRow :IRow = {...changedRow, parentId, level, total}
+					newRows.splice(index,1,newRow)
+				}
+			})
+			newRows.splice(index,1)
+			if(newRows.length === 0) newRows.push(...getRows([]))
+			setRowsAction(newRows)
+		}
 	})
 }

@@ -12,6 +12,10 @@ export const Api = createApi({
 
 		getRows: build.query<ITreeResponse[],void>({
 			query: () => 'list',
+			transformResponse: (r:ITreeResponse[])=>{
+				console.log('getRows r === ',r)
+				return r
+			}
 			// providesTags: res => ['rows'],
 		}),
 
@@ -39,7 +43,7 @@ export const Api = createApi({
 				method: 'DELETE',
 			}),
 			transformResponse: (r:IRowResponse)=>{
-				console.log('r === ',r)
+				console.log('delete Row r === ',r)
 				return r
 			}
 			// invalidatesTags:['rows']
