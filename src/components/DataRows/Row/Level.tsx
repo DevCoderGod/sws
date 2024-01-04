@@ -15,12 +15,13 @@ export function Level(props:ILevelProps) {
 	const onClickNewRowHandler = () => rowEditable === null && props.createNewRow()
 	const onClickTrashfillHandler = () => rowEditable === null && props.deleteRow()
 
-	const multiplier = props.index - rows.findIndex(row => row.id === props.pID) - 1
+	const {currentRow} = props
+	const multiplier = props.index - rows.findIndex(row => row.id === currentRow.parentId) - 1
 
 	return (
 		<div
 			className={S.level}
-			style={{paddingLeft:`${props.level*20}px`}}
+			style={{paddingLeft:`${currentRow.level*20}px`}}
 		>
 			<div
 				className={cn(S.container, mouseOverLevel && S.container_hover)}
@@ -31,8 +32,8 @@ export function Level(props:ILevelProps) {
 					className={S.rowIcon}
 					onClick={onClickNewRowHandler}
 				>
-					{props.pID && <div className={cn(S.line, S.left)}></div>}
-					{props.pID && <div 
+					{currentRow.parentId && <div className={cn(S.line, S.left)}></div>}
+					{currentRow.parentId && <div 
 						className={cn(S.line, S.up)}
 						style={{
 							height:`${52 + multiplier*60}px`,

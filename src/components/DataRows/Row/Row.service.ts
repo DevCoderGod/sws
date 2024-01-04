@@ -40,9 +40,7 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 
 	return({
 		index,
-		id:row.id,
-		level:row.level,
-		pID:row.parentId,
+		currentRow:row,
 		createNewRow:()=>{
 			addRowAction({
 				index: getIndexForNewLine(rows, index),
