@@ -120,8 +120,29 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 				}
 			})
 			newRows.splice(index,1)
+
+			clearRows(newRows)
+
 			if(newRows.length === 0) newRows.push(...getRows([]))
 			setRowsAction(newRows)
 		}
 	})
+}
+
+function clearRows(rows:IRow[]) {
+	let toTrash:number[] = []
+	rows.forEach((row, i) => {
+		if(row.parentId === null) return;
+		const index = rows.findIndex(pRow => {
+			return pRow.id === row.parentId
+		})
+		if(index < 0){
+			toTrash.push(i)
+		}
+	})
+	if(toTrash.length > 0){
+		toTrash.forEach(i => rows.splice(i,1))
+		toTrash=[]
+		clearRows(rows)
+	}
 }
