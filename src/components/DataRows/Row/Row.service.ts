@@ -1,7 +1,7 @@
 import { IRow, IRowResponse } from "../../../models/Row.model"
 import { useActions, useAppState } from "../../../store"
 import { Api } from '../../../api'
-import { createRow, getRows } from "../DataRows.service"
+import { createEmptyRow, getRows } from "../DataRows.service"
 import { ICellProps, ILevelProps } from "./Row.types"
 
 export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
@@ -51,8 +51,6 @@ function recalculatedRow(rows: IRow[], response:IRowResponse, currentRow:IRow): 
 		newRows.splice(parentRow.index,1,parentRow.row)
 	}
 
-
-
 	response.changed.forEach(changedRow=>{
 		const oldRow = newRows.find(row => row.id ===changedRow.id)
 		if(oldRow){
@@ -91,7 +89,7 @@ export function GetLevelProps(row:IRow, index:number):ILevelProps{
 		createNewRow:()=>{
 			addRowAction({
 				index: i,
-				newRow: createRow(row.level+1, row.id)
+				newRow: createEmptyRow(row.level+1, row.id)
 			})
 			startEditingAction(0)
 		},

@@ -2,11 +2,11 @@ import { ITreeResponse, IRow } from "../../models/Row.model"
 
 export function getRows(data:ITreeResponse[] | undefined, level:number=0, parentId:number|null=null):IRow[]{
 	if(!data) return []
-	if(data?.length === 0) return level === 0 ? [createRow(0)]:[]
+	if(data?.length === 0) return level === 0 ? [createEmptyRow()]:[]
 	return data.map(row => [{level, parentId, ...row}, ...getRows(row.child, level+1, row.id)]).flat()
 }
 
-export function createRow(level:number, parentId:number|null=null):IRow{
+export function createEmptyRow(level:number = 0, parentId:number | null = null):IRow{
 	return {
 		level,
 		parentId,
