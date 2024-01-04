@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { ICreateRowRequest, IRowBase, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row.model'
+import { ICreateRowRequest, IRowResponse, ITreeResponse, IUpdateRowRequest } from '../models/Row.model'
 import { id } from './id'
 
 export const Api = createApi({
@@ -12,10 +12,6 @@ export const Api = createApi({
 
 		getRows: build.query<ITreeResponse[],void>({
 			query: () => 'list',
-			transformResponse: (r:ITreeResponse[])=>{
-				console.log('getRows r === ',r)
-				return r
-			}
 			// providesTags: res => ['rows'],
 		}),
 
@@ -42,10 +38,6 @@ export const Api = createApi({
 				url:`/${rId}/delete`,
 				method: 'DELETE',
 			}),
-			transformResponse: (r:IRowResponse)=>{
-				console.log('delete Row r === ',r)
-				return r
-			}
 			// invalidatesTags:['rows']
 		})
 	})

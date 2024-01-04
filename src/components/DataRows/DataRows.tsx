@@ -5,7 +5,7 @@ import { Row } from './Row'
 import { useActions, useAppState } from '../../store'
 import { getRows } from './DataRows.service'
 
-const titles = ["Уровень","Наименование работ","total","Основная з/п","Оборудование","Накладные расходы","Сметная прибыль"]
+const titles = ["Уровень","Наименование работ","Основная з/п","Оборудование","Накладные расходы","Сметная прибыль"]
 
 export function DataRows() {
 

@@ -13,7 +13,7 @@ export function Level(props:ILevelProps) {
 	const onMouseEnterHandler = () => mouseEnterLevelAction()
 	const onMouseLeaveHandler = () => mouseLeaveLevelAction()
 	const onClickNewRowHandler = () => rowEditable === null && props.createNewRow()
-	const onClickTrashfillHandler = () => props.deleteRow()
+	const onClickTrashfillHandler = () => rowEditable === null && props.deleteRow()
 
 	const multiplier = props.index - rows.findIndex(row => row.id === props.pID) - 1
 
