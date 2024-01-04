@@ -22,7 +22,7 @@ export interface ICreateRowRequest extends Omit<IRowBase, 'total'|'id'> {
 	parentId: number | null
 }
 
-export interface IUpdateRowRequest extends Omit<IRowBase, 'total'|'id'> {}
+export interface IUpdateRowRequest extends Omit<IRowBase, 'total'> {}
 
 export interface IRowResponse {
 	changed: IRowBase[]

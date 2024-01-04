@@ -4,33 +4,30 @@ import { Api } from '../../../api'
 import { createEmptyRow, getRows } from "../DataRows.service"
 import { ICellProps, ILevelProps } from "./Row.types"
 
-export function GetCellProps(id:number, ref: React.MutableRefObject<IRow>){
+export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>):Omit<ICellProps, 'fieldName'>{
 	const {rows, rowEditable} = useAppState(state => state.Rows)
 	const {setRowsAction, startEditingAction, stopEditingAction} = useActions()
 	const [updateRow] = Api.useUpdateRowMutation()
 	const [createRow] = Api.useCreateRowMutation()
 
-	const propsCell:Omit<ICellProps, 'fieldName'> =
-	rowEditable === id
+	return rowEditable === currentRow.id
 	?	{
 			editable: true,
-			id:id,
+			id:currentRow.id,
 			editing: (fieldName:keyof IRow, value:any) => {
 				ref.current = {...ref.current, [fieldName]: value}
 			},
 			stopEditing: async() => {
-				if(id === 0){ setRowsAction(recalculatedRow(rows, await createRow(ref.current).unwrap(), ref.current)) }
-				if(id > 0){ setRowsAction(recalculatedRow(rows, await updateRow({id, body:{...ref.current}}).unwrap(), ref.current)) }
+				if(currentRow.id === 0){ setRowsAction(recalculatedRow(rows, await createRow(ref.current).unwrap(), ref.current)) }
+				if(currentRow.id > 0){ setRowsAction(recalculatedRow(rows, await updateRow(ref.current).unwrap(), ref.current)) }
 				stopEditingAction()
 			}
 		}
 	:	{
 			editable: false,
-			id:id,
-			startEditing: () => rowEditable === null && startEditingAction(id)
+			id:currentRow.id,
+			startEditing: () => rowEditable === null && startEditingAction(currentRow.id)
 		}
-	
-	return propsCell
 }
 
 function recalculatedRow(rows: IRow[], response:IRowResponse, currentRow:IRow): IRow[] {

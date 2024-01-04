@@ -24,11 +24,11 @@ export const Api = createApi({
 			// invalidatesTags:['rows']
 		}),
 
-		updateRow: build.mutation<IRowResponse, {id:number, body:IUpdateRowRequest}>({
-			query: (opt) => ({
-				url:`/${opt.id}/update`,
+		updateRow: build.mutation<IRowResponse, IUpdateRowRequest>({
+			query: (body) => ({
+				url:`/${body.id}/update`,
 				method: 'POST',
-				body: opt.body
+				body
 			}),
 			// invalidatesTags:['rows']
 		}),
