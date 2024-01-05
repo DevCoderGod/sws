@@ -70,7 +70,7 @@ function clearRows(rows:IRow[]) {
 		if(parentIndex < 0) toTrash.push(index)
 	})
 	if(toTrash.length > 0){
-		toTrash.forEach(i => rows.splice(i,1))
+		toTrash.reverse().forEach(i => rows.splice(i,1))
 		clearRows(rows)
 	}
 }
