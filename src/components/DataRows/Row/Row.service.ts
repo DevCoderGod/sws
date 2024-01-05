@@ -117,6 +117,7 @@ function recalculatedRows(rows: IRow[], response:IRowResponse, currentIndex:numb
 		}
 	})
 
+	if(stateRows.length === 0) stateRows.push(createRow())
 	return stateRows
 }
 
