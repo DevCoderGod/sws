@@ -1,10 +1,10 @@
 import { IRow, IRowResponse } from "../../../models/Row.model"
 import { useActions, useAppState } from "../../../store"
 import { Api } from '../../../api'
-import { createEmptyRow, getRows } from "../DataRows.service"
+import { createRow } from "../DataRows.service"
 import { ICellProps, ILevelProps } from "./Row.types"
 
-export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>):Omit<ICellProps, 'fieldName'>{
+export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>, currentIndex:number):Omit<ICellProps, 'fieldName'>{
 	const {rows, rowEditable} = useAppState(state => state.Rows)
 	const {setRowsAction, startEditingAction, stopEditingAction} = useActions()
 	const [updateRow] = Api.useUpdateRowMutation()
@@ -19,9 +19,9 @@ export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>)
 			},
 			stopEditing: async() => {
 				if(currentRow.id === 0)
-					setRowsAction(recalculatedRow(rows, await createRow(ref.current).unwrap(), ref.current))
+					setRowsAction(recalculatedRows(rows, await createRow(ref.current).unwrap(), currentIndex))
 				if(currentRow.id > 0)
-					setRowsAction(recalculatedRow(rows, await updateRow(ref.current).unwrap(), ref.current))
+					setRowsAction(recalculatedRows(rows, await updateRow(ref.current).unwrap(), currentIndex))
 
 				stopEditingAction()
 			}
@@ -33,87 +33,25 @@ export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>)
 		}
 }
 
-export function GetLevelProps(currentRow:IRow, index:number):ILevelProps{
+export function GetLevelProps(currentRow:IRow, currentIndex:number):ILevelProps{
 	const {rows} = useAppState(state => state.Rows)
 	const {setRowsAction, addRowAction, startEditingAction} = useActions()
 	const [deleteRow] = Api.useDeleteRowMutation()
 
 	return({
-		index,
+		currentIndex,
 		currentRow,
 		createNewRow:()=>{
 			addRowAction({
-				index: getIndexForNewLine(rows, index),
-				newRow: createEmptyRow(currentRow.level+1, currentRow.id)
+				index: getIndexForNewLine(rows, currentIndex),
+				newRow: createRow(currentRow.level+1, currentRow.id)
 			})
 			startEditingAction(0)
 		},
 		deleteRow: async() => {
-			const response = await deleteRow(currentRow.id).unwrap()
-			const newRows = [...rows]
-
-			if(currentRow.parentId){
-				const parentIndex = newRows.findIndex(orow => orow.id ===currentRow.parentId)
-				const parentRow:({index:number, row:IRow}) = {
-					index: parentIndex,
-					row: {...newRows[parentIndex], total:newRows[parentIndex].total-1}
-				}
-				newRows.splice(parentRow.index,1,parentRow.row)
-		
-			}
-			response.changed.forEach(changedRow=>{
-				const oldRow = newRows.find(row => row.id ===changedRow.id)
-				if(oldRow){
-					const total = oldRow.total
-					const parentId = oldRow.parentId
-					const level = oldRow.level
-					const index = newRows.findIndex(row => row.id === oldRow.id)
-					const newRow :IRow = {...changedRow, parentId, level, total}
-					newRows.splice(index,1,newRow)
-				}
-			})
-			newRows.splice(index,1)
-
-			clearRows(newRows)
-
-			if(newRows.length === 0) newRows.push(...getRows([]))
-			setRowsAction(newRows)
+			setRowsAction(recalculatedRows(rows, await deleteRow(currentRow.id).unwrap(), currentIndex))
 		}
 	})
-}
-
-
-
-function recalculatedRow(rows: IRow[], response:IRowResponse, currentRow:IRow): IRow[] {
-	const newRows = [...rows]
-
-	const newRow:({index:number, row:IRow}) = {
-		index: newRows.findIndex(row => row.id ===currentRow.id),
-		row: {parentId:currentRow.parentId, level: currentRow.level,...response.current, total: currentRow.total}
-	}
-	newRows.splice(newRow.index,1,newRow.row)
-
-	if(currentRow.parentId){
-		const parentIndex = newRows.findIndex(row => row.id ===currentRow.parentId)
-		const parentRow:({index:number, row:IRow}) = {
-			index: parentIndex,
-			row: {...newRows[parentIndex], total:newRows[parentIndex].total+1}
-		}
-		newRows.splice(parentRow.index,1,parentRow.row)
-	}
-
-	response.changed.forEach(changedRow=>{
-		const oldRow = newRows.find(row => row.id ===changedRow.id)
-		if(oldRow){
-			const total = oldRow.total
-			const parentId = oldRow.parentId
-			const level = oldRow.level
-			const index = newRows.findIndex(row => row.id === oldRow.id)
-			const newRow :IRow = {...changedRow, parentId, level, total}
-			newRows.splice(index,1,newRow)
-		}
-	})
-	return newRows
 }
 
 export function getIndexForNewLine(rows: IRow[], index:number):number{
@@ -126,18 +64,57 @@ export function getIndexForNewLine(rows: IRow[], index:number):number{
 
 function clearRows(rows:IRow[]) {
 	let toTrash:number[] = []
-	rows.forEach((row, i) => {
+	rows.forEach((row, index) => {
 		if(row.parentId === null) return;
-		const index = rows.findIndex(pRow => {
-			return pRow.id === row.parentId
-		})
-		if(index < 0){
-			toTrash.push(i)
-		}
+		const parentIndex = rows.findIndex(pRow => pRow.id === row.parentId)
+		if(parentIndex < 0) toTrash.push(index)
 	})
 	if(toTrash.length > 0){
 		toTrash.forEach(i => rows.splice(i,1))
-		toTrash=[]
 		clearRows(rows)
 	}
+}
+
+function recalculatedRows(rows: IRow[], response:IRowResponse, currentIndex:number):IRow[] {
+	const stateRows = [...rows]
+	const currentRow = rows[currentIndex]
+	let parentIndex = currentRow.parentId ? stateRows.findIndex(stateRow => stateRow.id === currentRow.parentId) : null
+
+	//если новая | исправленная строка
+	if(response.current){
+
+		stateRows.splice( currentIndex, 1, //заменяем по текущему индексу
+			createRow(currentRow.level, currentRow.parentId, response.current, currentRow.total)
+		)
+		
+		if(currentRow.id === 0 && parentIndex && parentIndex >= 0){ // если новая строка и есть родитель - увеличить тотал в родителе
+			stateRows.splice( parentIndex, 1,
+				createRow(stateRows[parentIndex].level, stateRows[parentIndex].parentId, stateRows[parentIndex], stateRows[parentIndex].total+1)
+			)
+		}
+	//если удалённая строка
+	} else {
+		stateRows.splice(currentIndex,1) //удаляем
+
+		if(parentIndex && parentIndex >= 0){ // если есть родитель - уменьшить тотал в родителе
+			stateRows.splice( parentIndex, 1,
+				createRow(stateRows[parentIndex].level, stateRows[parentIndex].parentId, stateRows[parentIndex], stateRows[parentIndex].total-1)
+			)
+		}
+		clearRows(stateRows)
+	}
+
+	//прокрутить changed
+	response.changed.forEach(changedRow=>{
+		const stateRowIndex = stateRows.findIndex(row => row.id === changedRow.id)
+		if(stateRowIndex >= 0){
+			stateRows.splice(
+				stateRowIndex,
+				1,
+				createRow(stateRows[stateRowIndex].level, stateRows[stateRowIndex].parentId, changedRow, stateRows[stateRowIndex].total-1)
+			)
+		}
+	})
+
+	return stateRows
 }

@@ -16,7 +16,7 @@ export function Level(props:ILevelProps) {
 	const onClickTrashfillHandler = () => rowEditable === null && props.deleteRow()
 
 	const {currentRow} = props
-	const multiplier = props.index - rows.findIndex(row => row.id === currentRow.parentId) - 1
+	const multiplier = props.currentIndex - rows.findIndex(row => row.id === currentRow.parentId) - 1
 
 	return (
 		<div

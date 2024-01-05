@@ -1,7 +1,7 @@
 import { IRow, IRowBase } from "../../../models/Row.model"
 
 export interface ILevelProps {
-	index:number
+	currentIndex:number
 	currentRow:IRow
 	createNewRow:()=>void
 	deleteRow:()=>void
