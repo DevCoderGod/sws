@@ -88,7 +88,7 @@ function recalculatedRows(rows: IRow[], response:IRowResponse, currentIndex:numb
 			createRow(currentRow.level, currentRow.parentId, response.current, currentRow.total)
 		)
 		
-		if(currentRow.id === 0 && parentIndex && parentIndex >= 0){ // если новая строка и есть родитель - увеличить тотал в родителе
+		if(currentRow.id === 0 && parentIndex && parentIndex >= 0){ // если новая строка и есть родитель - увеличить тотал в родителе *1
 			stateRows.splice( parentIndex, 1,
 				createRow(stateRows[parentIndex].level, stateRows[parentIndex].parentId, stateRows[parentIndex], stateRows[parentIndex].total+1)
 			)
@@ -97,7 +97,7 @@ function recalculatedRows(rows: IRow[], response:IRowResponse, currentIndex:numb
 	} else {
 		stateRows.splice(currentIndex,1) //удаляем
 
-		if(parentIndex && parentIndex >= 0){ // если есть родитель - уменьшить тотал в родителе
+		if(parentIndex && parentIndex >= 0){ // если есть родитель - уменьшить тотал в родителе *1
 			stateRows.splice( parentIndex, 1,
 				createRow(stateRows[parentIndex].level, stateRows[parentIndex].parentId, stateRows[parentIndex], stateRows[parentIndex].total-1)
 			)
@@ -119,3 +119,7 @@ function recalculatedRows(rows: IRow[], response:IRowResponse, currentIndex:numb
 
 	return stateRows
 }
+
+// *1
+// Api.getTreeRows отдаёт список, в каждом элементе(Row) которого есть total, отражающий количество прямых наследников.
+// В остальных ответах Api все Row имеют поле total равное 0. Ошибка..
