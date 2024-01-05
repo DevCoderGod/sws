@@ -13,10 +13,9 @@ export function DataRows() {
 	const {setRowsAction, startEditingAction} = useActions()
 	
 	const {rows} = useAppState(state => state.Rows)
-	useEffect(() => {
-		setRowsAction(getRows(data))
-		data?.length === 0 && startEditingAction(0)
-	},[data])
+	
+	useEffect(() => {setRowsAction(getRows(data))},[data])
+	useEffect(() => {if(rows.find(row => row.id === 0)) startEditingAction(0)},[rows])
 
 	return (
 		<div className={S.dataRows}>

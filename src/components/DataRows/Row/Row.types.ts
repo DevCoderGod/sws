@@ -1,10 +1,8 @@
-import { IRowBase } from "../../../models/Row.model"
+import { IRow, IRowBase } from "../../../models/Row.model"
 
 export interface ILevelProps {
-	id:number
-	level:number
-	pID:number | null
-	index:number
+	currentIndex:number
+	currentRow:IRow
 	createNewRow:()=>void
 	deleteRow:()=>void
 }

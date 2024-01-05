@@ -14,7 +14,7 @@ interface IProps{
 export function Row(props:IProps) {
 	let rowRef = useRef<IRow>(props.row)
 	
-	const propsCell:Omit<ICellProps, 'fieldName'> = GetCellProps(props.row.id, rowRef)
+	const propsCell:Omit<ICellProps, 'fieldName'> = GetCellProps(props.row, rowRef, props.index)
 	const propsLevel = GetLevelProps(props.row, props.index)
 
 	return <>

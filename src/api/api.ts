@@ -7,12 +7,12 @@ export const Api = createApi({
 	baseQuery: fetchBaseQuery({
 		baseUrl: `http://185.244.172.108:8081/v1/outlay-rows/entity/${id}/row`
 	}),
-	tagTypes:['rows'],
+	// tagTypes:['rows'],
 	endpoints: (build) => ({
 
 		getRows: build.query<ITreeResponse[],void>({
 			query: () => 'list',
-			providesTags: res => ['rows'],
+			// providesTags: res => ['rows'],
 		}),
 
 		createRow: build.mutation<IRowResponse, ICreateRowRequest>({
@@ -21,16 +21,16 @@ export const Api = createApi({
 				method: 'POST',
 				body
 			}),
-			invalidatesTags:['rows']
+			// invalidatesTags:['rows']
 		}),
 
-		updateRow: build.mutation<IRowResponse, {id:number, body:IUpdateRowRequest}>({
-			query: (opt) => ({
-				url:`/${opt.id}/update`,
+		updateRow: build.mutation<IRowResponse, IUpdateRowRequest>({
+			query: (body) => ({
+				url:`/${body.id}/update`,
 				method: 'POST',
-				body: opt.body
+				body
 			}),
-			invalidatesTags:['rows']
+			// invalidatesTags:['rows']
 		}),
 
 		deleteRow: build.mutation<IRowResponse, number>({
@@ -38,7 +38,7 @@ export const Api = createApi({
 				url:`/${rId}/delete`,
 				method: 'DELETE',
 			}),
-			invalidatesTags:['rows']
+			// invalidatesTags:['rows']
 		})
 	})
 })

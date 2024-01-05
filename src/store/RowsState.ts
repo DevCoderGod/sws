@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IRow } from "../models/Row.model";
+import { IRow, IRowResponse } from "../models/Row.model";
 
 interface IRowsState {
 	rows: IRow[]
