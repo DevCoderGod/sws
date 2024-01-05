@@ -1,6 +1,7 @@
 {
   "name": "sws",
   "version": "0.1.0",
+  "homepage": "https://devcodergod.github.io/sws/",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.0.1",
