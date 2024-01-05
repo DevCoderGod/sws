@@ -34,8 +34,8 @@ export function GetCellProps(currentRow:IRow, ref: React.MutableRefObject<IRow>,
 }
 
 export function GetLevelProps(currentRow:IRow, currentIndex:number):ILevelProps{
-	const {rows} = useAppState(state => state.Rows)
-	const {setRowsAction, addRowAction, startEditingAction} = useActions()
+	const {rows, mouseOverLevel} = useAppState(state => state.Rows)
+	const {setRowsAction, addRowAction, startEditingAction, mouseLeaveLevelAction} = useActions()
 	const [deleteRow] = Api.useDeleteRowMutation()
 
 	return({
@@ -50,6 +50,7 @@ export function GetLevelProps(currentRow:IRow, currentIndex:number):ILevelProps{
 		},
 		deleteRow: async() => {
 			setRowsAction(recalculatedRows(rows, await deleteRow(currentRow.id).unwrap(), currentIndex))
+			if(mouseOverLevel) mouseLeaveLevelAction()
 		}
 	})
 }
